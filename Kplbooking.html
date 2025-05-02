@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>KPL - Ticket Booking</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f2f5;
+      margin: 0;
+      padding: 20px;
+    }
+    header {
+      background: #343a40;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+    .container {
+      max-width: 800px;
+      margin: auto;
+    }
+    .match-details, .confirmation-screen {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      margin-top: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .seating-chart {
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      gap: 10px;
+      margin-top: 20px;
+    }
+    .seat {
+      width: 100%;
+      padding-top: 100%;
+      background-color: #28a745;
+      border-radius: 5px;
+      position: relative;
+      cursor: pointer;
+    }
+    .seat.selected {
+      background-color: #ffc107;
+    }
+    .seat::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+    }
+    .ticket-section {
+      margin-top: 20px;
+      text-align: center;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #007bff;
+      border: none;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .confirmation-screen {
+      display: none;
+      text-align: center;
+    }
+    .confirmation-screen h2 {
+      color: #28a745;
+    }
+    .seat-list {
+      font-weight: bold;
+      margin: 10px 0;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>KPL Ticket Sales</h1>
+</header>
+
+<div class="container">
+  <!-- Match Details and Seat Selection -->
+  <div class="match-details" id="bookingScreen">
+    <h2>Match 1: Manga Mittai vs Acha Atti</h2>
+    <p>Date: Coming Soon</p>
+    <p>Venue: KPL Stadium</p>
+
+    <div class="ticket-section">
+      <h3>Select Your Seats</h3>
+      <div class="seating-chart" id="seatingChart"></div>
+      <br>
+      <button onclick="bookSeats()">Book Now</button>
+    </div>
+  </div>
+
+  <!-- Confirmation Screen -->
+  <div class="confirmation-screen" id="confirmationScreen">
+    <h2>Booking Confirmed!</h2>
+    <p>Your seat(s):</p>
+    <p class="seat-list" id="seatList"></p>
+    <p>Thank you for booking. Enjoy the match!</p>
+    <button onclick="goBack()">Book More Tickets</button>
+  </div>
+</div>
+
+<script>
+  const seatingChart = document.getElementById('seatingChart');
+  const bookingScreen = document.getElementById('bookingScreen');
+  const confirmationScreen = document.getElementById('confirmationScreen');
+  const seatList = document.getElementById('seatList');
+
+  // Create 100 seats
+  for (let i = 1; i <= 100; i++) {
+    const seat = document.createElement('div');
+    seat.classList.add('seat');
+    seat.setAttribute('data-seat-number', i);
+    seat.onclick = () => seat.classList.toggle('selected');
+    seatingChart.appendChild(seat);
+  }
+
+  // Handle booking
+  function bookSeats() {
+    const selectedSeats = document.querySelectorAll('.seat.selected');
+    if (selectedSeats.length === 0) {
+      alert('Please select at least one seat.');
+      return;
+    }
+
+    const seatNumbers = Array.from(selectedSeats).map(seat =>
+      seat.getAttribute('data-seat-number'));
+    seatList.textContent = seatNumbers.join(', ');
+
+    // Hide booking screen, show confirmation
+    bookingScreen.style.display = 'none';
+    confirmationScreen.style.display = 'block';
+  }
+
+  // Go back to seat selection
+  function goBack() {
+    // Deselect seats
+    document.querySelectorAll('.seat.selected').forEach(seat =>
+      seat.classList.remove('selected'));
+
+    // Show booking screen again
+    confirmationScreen.style.display = 'none';
+    bookingScreen.style.display = 'block';
+  }
+</script>
+
+</body>
+</html>
